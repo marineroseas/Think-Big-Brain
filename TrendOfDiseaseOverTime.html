@@ -632,6 +632,119 @@ Yemen &amp; Venezuela, #MeToo Movement, Cilmate Change becomes a
 - 20s Trump aquitted of impeachment charges, George Floyd killing &amp; subsequent protests, COVID-19 pandemic</code></pre>
 <hr />
 </div>
+<div id="a-very-basic-ai" class="section level3">
+<h3>A Very Basic AI</h3>
+<div id="the-following-is-based-of-very-bad-code-which-i-wrote-and-was-jazzed-up-by-chatgpt-to-make-it-actually-work." class="section level4">
+<h4>The following is based of (very bad) code which I wrote and was
+jazzed up by chatGPT to make it actually work.</h4>
+<hr />
+<p>The goal of this AI is to check all years for a dataframe given and
+return whether one year was worringly high (mathematically an outlier).
+This allows people to identify when a disease might be more/less
+contagious for whatever reason in a given year. In a more advanced form
+it might be able to estimate the count for a disease in a future
+year.</p>
+<hr />
+</div>
+</div>
+<div id="create-functions-to-find-outliers-display-corresponding-years" class="section level3">
+<h3>Create functions to find outliers display corresponding years</h3>
+<pre class="r"><code># Function to find outliers and return both the values and years
+find_outliers &lt;- function(dataset) {
+  dataset &lt;- dataset[!is.na(dataset$combined) &amp; !is.na(dataset$Year), ]
+  
+  years = dataset$Year
+  x = dataset$combined
+  
+  Q1 &lt;- quantile(x, 0.25, na.rm = TRUE)
+  Q3 &lt;- quantile(x, 0.75, na.rm = TRUE)
+  IQR &lt;- Q3 - Q1
+  lower_bound &lt;- Q1 - 1.5 * IQR
+  upper_bound &lt;- Q3 + 1.5 * IQR
+  
+  # Identify outliers and their corresponding years
+  outliers &lt;- x[x &lt; lower_bound | x &gt; upper_bound]
+  outlier_years &lt;- years[x &lt; lower_bound | x &gt; upper_bound]
+  
+  # Return a data frame with years and outlier values
+  return(data.frame(Year = outlier_years, OutlierValue = outliers))
+}
+
+# Function to display each outlier year and its value
+display_outliers &lt;- function(outliers) {
+  for (i in 1:nrow(outliers)) {
+    print(paste(&quot;Concerning value in year&quot;, outliers$Year[i], 
+                &quot;with a value of&quot;, outliers$OutlierValue[i]))
+  }
+}</code></pre>
+</div>
+</div>
+<div id="plug-in-data" class="section level2">
+<h2>Plug in data</h2>
+<div id="diptheria" class="section level3">
+<h3>Diptheria</h3>
+<pre class="r"><code>diptheria_outliers = find_outliers(clean_diptheria)
+display_outliers(diptheria_outliers)</code></pre>
+<pre><code>## [1] &quot;Concerning value in year 1974 with a value of 6138&quot;
+## [1] &quot;Concerning value in year 1975 with a value of 6348&quot;
+## [1] &quot;Concerning value in year 1976 with a value of 7315&quot;
+## [1] &quot;Concerning value in year 1977 with a value of 7775&quot;
+## [1] &quot;Concerning value in year 1978 with a value of 6857&quot;
+## [1] &quot;Concerning value in year 1979 with a value of 5845&quot;
+## [1] &quot;Concerning value in year 1980 with a value of 5571&quot;
+## [1] &quot;Concerning value in year 1981 with a value of 4748&quot;
+## [1] &quot;Concerning value in year 1982 with a value of 4087&quot;
+## [1] &quot;Concerning value in year 1983 with a value of 4023&quot;
+## [1] &quot;Concerning value in year 1984 with a value of 3546&quot;
+## [1] &quot;Concerning value in year 1992 with a value of 5812&quot;
+## [1] &quot;Concerning value in year 1993 with a value of 4372&quot;
+## [1] &quot;Concerning value in year 1994 with a value of 8171&quot;
+## [1] &quot;Concerning value in year 1995 with a value of 14802&quot;
+## [1] &quot;Concerning value in year 1996 with a value of 6727&quot;
+## [1] &quot;Concerning value in year 1997 with a value of 7179&quot;</code></pre>
+</div>
+<div id="measles" class="section level3">
+<h3>Measles</h3>
+<pre class="r"><code>measles_outliers = find_outliers(clean_measles)
+display_outliers(measles_outliers)</code></pre>
+<pre><code>## [1] &quot;Concerning value in year NA with a value of NA&quot;
+## [1] &quot;Concerning value in year  with a value of &quot;</code></pre>
+</div>
+<div id="mumps" class="section level3">
+<h3>Mumps</h3>
+<pre class="r"><code>mumps_outliers = find_outliers(clean_mumps)
+display_outliers(mumps_outliers)</code></pre>
+<pre><code>## [1] &quot;Concerning value in year 2000 with a value of 57602&quot;
+## [1] &quot;Concerning value in year 2001 with a value of 47898&quot;
+## [1] &quot;Concerning value in year 2002 with a value of 57881&quot;</code></pre>
+</div>
+<div id="total-rubella" class="section level3">
+<h3>Total Rubella</h3>
+<pre class="r"><code>tot_rub_outliers = find_outliers(clean_total_rubella)
+display_outliers(tot_rub_outliers)</code></pre>
+<pre><code>## [1] &quot;Concerning value in year 1999 with a value of 38966&quot;
+## [1] &quot;Concerning value in year 2001 with a value of 32505&quot;
+## [1] &quot;Concerning value in year 2002 with a value of 31450&quot;
+## [1] &quot;Concerning value in year 2005 with a value of 39126&quot;</code></pre>
+</div>
+<div id="total-tenatus" class="section level3">
+<h3>Total Tenatus</h3>
+<pre class="r"><code>tot_ten_outliers = find_outliers(clean_total_tenatus)
+display_outliers(tot_ten_outliers)</code></pre>
+<pre><code>## [1] &quot;Concerning value in year 1974 with a value of 6048&quot;
+## [1] &quot;Concerning value in year 1975 with a value of 6214&quot;
+## [1] &quot;Concerning value in year 1976 with a value of 6817&quot;
+## [1] &quot;Concerning value in year 1977 with a value of 7252&quot;
+## [1] &quot;Concerning value in year 1978 with a value of 6885&quot;
+## [1] &quot;Concerning value in year 1979 with a value of 6362&quot;
+## [1] &quot;Concerning value in year 1980 with a value of 7055&quot;
+## [1] &quot;Concerning value in year 1981 with a value of 6247&quot;
+## [1] &quot;Concerning value in year 1982 with a value of 6305&quot;
+## [1] &quot;Concerning value in year 1983 with a value of 6063&quot;
+## [1] &quot;Concerning value in year 1984 with a value of 6118&quot;
+## [1] &quot;Concerning value in year 1985 with a value of 5572&quot;
+## [1] &quot;Concerning value in year 1986 with a value of 4823&quot;</code></pre>
+</div>
 </div>
 
 
